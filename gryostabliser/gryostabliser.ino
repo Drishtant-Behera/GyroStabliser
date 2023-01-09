@@ -1,54 +1,699 @@
-// (c) Michael Schoeffler 2017, http://www.mschoeffler.de
 
-#include "Wire.h" // This library allows you to communicate with I2C devices.
+#include "Wire.h"
+#include <Servo.h> 
 
-const int MPU_ADDR = 0x68; // I2C address of the MPU-6050. If AD0 pin is set to HIGH, the I2C address will be 0x69.
+const int MPU_ADDR = 0x68;
 
-int16_t accelerometer_x, accelerometer_y, accelerometer_z; // variables for accelerometer raw data
-int16_t gyro_x, gyro_y, gyro_z; // variables for gyro raw data
-int16_t temperature; // variables for temperature data
+int servoPin = 13;
+int16_t accelerometer_x, accelerometer_y, accelerometer_z; 
+int16_t gyro_x, gyro_y, gyro_z;
+int16_t temperature;
+Servo Servo1; 
 
-char tmp_str[7]; // temporary variable used in convert function
+char tmp_str[7];
 
-char* convert_int16_to_str(int16_t i) { // converts int16 to string. Moreover, resulting strings will have the same length in the debug monitor.
+char* convert_int16_to_str(int16_t i) { 
   sprintf(tmp_str, "%6d", i);
   return tmp_str;
 }
 
 void setup() {
+  Servo1.attach(servoPin);
   Serial.begin(9600);
   Wire.begin();
-  Wire.beginTransmission(MPU_ADDR); // Begins a transmission to the I2C slave (GY-521 board)
-  Wire.write(0x6B); // PWR_MGMT_1 register
-  Wire.write(0); // set to zero (wakes up the MPU-6050)
+  Wire.beginTransmission(MPU_ADDR);
+  Wire.write(0x6B);
+  Wire.write(0);
   Wire.endTransmission(true);
 }
 void loop() {
   Wire.beginTransmission(MPU_ADDR);
-  Wire.write(0x3B); // starting with register 0x3B (ACCEL_XOUT_H) [MPU-6000 and MPU-6050 Register Map and Descriptions Revision 4.2, p.40]
-  Wire.endTransmission(false); // the parameter indicates that the Arduino will send a restart. As a result, the connection is kept active.
-  Wire.requestFrom(MPU_ADDR, 7*2, true); // request a total of 7*2=14 registers
+  Wire.write(0x3B); 
+  Wire.endTransmission(false); 
+  Wire.requestFrom(MPU_ADDR, 7*2, true); 
   
   // "Wire.read()<<8 | Wire.read();" means two registers are read and stored in the same variable
-  accelerometer_x = Wire.read()<<8 | Wire.read(); // reading registers: 0x3B (ACCEL_XOUT_H) and 0x3C (ACCEL_XOUT_L)
-  accelerometer_y = Wire.read()<<8 | Wire.read(); // reading registers: 0x3D (ACCEL_YOUT_H) and 0x3E (ACCEL_YOUT_L)
-  accelerometer_z = Wire.read()<<8 | Wire.read(); // reading registers: 0x3F (ACCEL_ZOUT_H) and 0x40 (ACCEL_ZOUT_L)
-  temperature = Wire.read()<<8 | Wire.read(); // reading registers: 0x41 (TEMP_OUT_H) and 0x42 (TEMP_OUT_L)
-  gyro_x = Wire.read()<<8 | Wire.read(); // reading registers: 0x43 (GYRO_XOUT_H) and 0x44 (GYRO_XOUT_L)
-  gyro_y = Wire.read()<<8 | Wire.read(); // reading registers: 0x45 (GYRO_YOUT_H) and 0x46 (GYRO_YOUT_L)
-  gyro_z = Wire.read()<<8 | Wire.read(); // reading registers: 0x47 (GYRO_ZOUT_H) and 0x48 (GYRO_ZOUT_L)
+  accelerometer_x = Wire.read()<<8 | Wire.read(); 
+  accelerometer_y = Wire.read()<<8 | Wire.read(); 
+  accelerometer_z = Wire.read()<<8 | Wire.read();
+  temperature = Wire.read()<<8 | Wire.read();
+  gyro_x = Wire.read()<<8 | Wire.read();
+  gyro_y = Wire.read()<<8 | Wire.read(); 
+  gyro_z = Wire.read()<<8 | Wire.read();
   
   // print out data
   Serial.print("aX = "); Serial.print(convert_int16_to_str(accelerometer_x));
   Serial.print(" | aY = "); Serial.print(convert_int16_to_str(accelerometer_y));
   Serial.print(" | aZ = "); Serial.print(convert_int16_to_str(accelerometer_z));
-  // the following equation was taken from the documentation [MPU-6000/MPU-6050 Register Map and Description, p.30]
   Serial.print(" | tmp = "); Serial.print(temperature/340.00+36.53);
   Serial.print(" | gX = "); Serial.print(convert_int16_to_str(gyro_x));
   Serial.print(" | gY = "); Serial.print(convert_int16_to_str(gyro_y));
   Serial.print(" | gZ = "); Serial.print(convert_int16_to_str(gyro_z));
   Serial.println();
+  if (accelerometer_x > 0 && accelerometer_x < 50);
+  {
+    Servo1.write(0);
+  }
+  else if (accelerometer_x > 50 && accelerometer_x < 100);
+  {
+    Servo1.write(1);
+  }
+  else if (accelerometer_x > 50 && accelerometer_x < 100);
+  {
+    Servo1.write(2);
+  }
+  else if (accelerometer_x > 100 && accelerometer_x <150);
+  {
+    Servo1.write(3);
+  }
+  else if (accelerometer_x > 150 && accelerometer_x < 200);
+  {
+    Servo1.write(4);
+  }
+  else if (accelerometer_x > 200 && accelerometer_x < 250);
+  {
+    Servo1.write(5);
+  }
+  else if (accelerometer_x > 250 && accelerometer_x < 300);
+  {
+    Servo1.write(6);
+  }
+  else if (accelerometer_x > 300 && accelerometer_x < 350);
+  {
+    Servo1.write(7);
+  }
+  else if (accelerometer_x > 350 && accelerometer_x < 400);
+  {
+    Servo1.write(8);
+  }
+  else if (aaccelerometer_xX > 400 && accelerometer_x < 450);
+  {
+    Servo1.write(9);
+  }
+  else if (aaccelerometer_x > 450 && accelerometer_x < 500);
+  {
+    Servo1.write(10);
+  }
+    else if (accelerometer_x > 500 && accelerometer_x < 550);
+  {
+    Servo1.write(11);
+  }
+  else if (accelerometer_x > 550 && accelerometer_x < 600);
+  {
+    Servo1.write(12);
+  }
+  else if (accelerometer_x > 600 && accelerometer_x <650);
+  {
+    Servo1.write(13);
+  }
+  else if (accelerometer_x > 650 && accelerometer_x < 700);
+  {
+    Servo1.write(14);
+  }
+  else if (accelerometer_x > 700 && accelerometer_x < 750);
+  {
+    Servo1.write(15);
+  }
+  else if (accelerometer_x > 750 && accelerometer_x < 800);
+  {
+    Servo1.write(16);
+  }
+  else if (accelerometer_x > 800 && accelerometer_x < 850);
+  {
+    Servo1.write(17);
+  }
+  else if (accelerometer_x > 850 && accelerometer_x < 900);
+  {
+    Servo1.write(18);
+  }
+  else if (aaccelerometer_xX > 900 && accelerometer_x < 950);
+  {
+    Servo1.write(19);
+  }
+  else if (aaccelerometer_x > 950 && accelerometer_x < 1000);
+  {
+    Servo1.write(20);
+  }
+    else if (accelerometer_x > 1000 && accelerometer_x < 1050);
+  {
+    Servo1.write(21);
+  }
+  else if (accelerometer_x > 1050 && accelerometer_x < 1100);
+  {
+    Servo1.write(22);
+  }
+  else if (accelerometer_x > 1100 && accelerometer_x <1150);
+  {
+    Servo1.write(23);
+  }
+  else if (accelerometer_x > 1150 && accelerometer_x < 1200);
+  {
+    Servo1.write(24);
+  }
+  else if (accelerometer_x > 1200 && accelerometer_x < 1250);
+  {
+    Servo1.write(25);
+  }
+  else if (accelerometer_x > 1250 && accelerometer_x < 1300);
+  {
+    Servo1.write(26);
+  }
+  else if (accelerometer_x > 1300 && accelerometer_x < 1350);
+  {
+    Servo1.write(27);
+  }
+  else if (accelerometer_x > 1350 && accelerometer_x < 1400);
+  {
+    Servo1.write(28);
+  }
+  else if (aaccelerometer_xX > 1400 && accelerometer_x < 1450);
+  {
+    Servo1.write(29);
+  }
+  else if (aaccelerometer_x > 1450 && accelerometer_x < 1500);
+  {
+    Servo1.write(30);
+  }
+    else if (accelerometer_x > 1500 && accelerometer_x < 1550);
+  {
+    Servo1.write(31);
+  }
+  else if (accelerometer_x > 1550 && accelerometer_x < 1600);
+  {
+    Servo1.write(32);
+  }
+  else if (accelerometer_x > 1600 && accelerometer_x <1650);
+  {
+    Servo1.write(33);
+  }
+  else if (accelerometer_x > 1650 && accelerometer_x < 1700);
+  {
+    Servo1.write(34);
+  }
+  else if (accelerometer_x > 1700 && accelerometer_x < 1750);
+  {
+    Servo1.write(35);
+  }
+  else if (accelerometer_x > 1750 && accelerometer_x < 1800);
+  {
+    Servo1.write(36);
+  }
+  else if (accelerometer_x > 1800 && accelerometer_x < 1850);
+  {
+    Servo1.write(37);
+  }
+  else if (accelerometer_x > 1850 && accelerometer_x < 1900);
+  {
+    Servo1.write(38);
+  }
+  else if (aaccelerometer_xX > 1900 && accelerometer_x < 1950);
+  {
+    Servo1.write(39);
+  }
+  else if (aaccelerometer_x > 1950 && accelerometer_x < 2000);
+  {
+    Servo1.write(40);
+  }
+    else if (accelerometer_x > 50 && accelerometer_x < 100);
+  {
+    Servo1.write(1);
+  }
+  else if (accelerometer_x > 50 && accelerometer_x < 100);
+  {
+    Servo1.write(2);
+  }
+  else if (accelerometer_x > 100 && accelerometer_x <150);
+  {
+    Servo1.write(3);
+  }
+  else if (accelerometer_x > 150 && accelerometer_x < 200);
+  {
+    Servo1.write(4);
+  }
+  else if (accelerometer_x > 200 && accelerometer_x < 250);
+  {
+    Servo1.write(5);
+  }
+  else if (accelerometer_x > 250 && accelerometer_x < 300);
+  {
+    Servo1.write(6);
+  }
+  else if (accelerometer_x > 300 && accelerometer_x < 350);
+  {
+    Servo1.write(7);
+  }
+  else if (accelerometer_x > 350 && accelerometer_x < 400);
+  {
+    Servo1.write(8);
+  }
+  else if (aaccelerometer_xX > 400 && accelerometer_x < 450);
+  {
+    Servo1.write(9);
+  }
+  else if (aaccelerometer_x > 450 && accelerometer_x < 500);
+  {
+    Servo1.write(10);
+  }
+    else if (accelerometer_x > 500 && accelerometer_x < 550);
+  {
+    Servo1.write(11);
+  }
+  else if (accelerometer_x > 550 && accelerometer_x < 600);
+  {
+    Servo1.write(12);
+  }
+  else if (accelerometer_x > 600 && accelerometer_x <650);
+  {
+    Servo1.write(13);
+  }
+  else if (accelerometer_x > 650 && accelerometer_x < 700);
+  {
+    Servo1.write(14);
+  }
+  else if (accelerometer_x > 700 && accelerometer_x < 750);
+  {
+    Servo1.write(15);
+  }
+  else if (accelerometer_x > 750 && accelerometer_x < 800);
+  {
+    Servo1.write(16);
+  }
+  else if (accelerometer_x > 800 && accelerometer_x < 850);
+  {
+    Servo1.write(17);
+  }
+  else if (accelerometer_x > 850 && accelerometer_x < 900);
+  {
+    Servo1.write(18);
+  }
+  else if (aaccelerometer_xX > 900 && accelerometer_x < 950);
+  {
+    Servo1.write(19);
+  }
+  else if (aaccelerometer_x > 950 && accelerometer_x < 1000);
+  {
+    Servo1.write(20);
+  }
+    else if (accelerometer_x > 1000 && accelerometer_x < 1050);
+  {
+    Servo1.write(21);
+  }
+  else if (accelerometer_x > 1050 && accelerometer_x < 1100);
+  {
+    Servo1.write(22);
+  }
+  else if (accelerometer_x > 1100 && accelerometer_x <1150);
+  {
+    Servo1.write(23);
+  }
+  else if (accelerometer_x > 1150 && accelerometer_x < 1200);
+  {
+    Servo1.write(24);
+  }
+  else if (accelerometer_x > 1200 && accelerometer_x < 1250);
+  {
+    Servo1.write(25);
+  }
+  else if (accelerometer_x > 1250 && accelerometer_x < 1300);
+  {
+    Servo1.write(26);
+  }
+  else if (accelerometer_x > 1300 && accelerometer_x < 1350);
+  {
+    Servo1.write(27);
+  }
+  else if (accelerometer_x > 1350 && accelerometer_x < 1400);
+  {
+    Servo1.write(28);
+  }
+  else if (aaccelerometer_xX > 1400 && accelerometer_x < 1450);
+  {
+    Servo1.write(29);
+  }
+  else if (aaccelerometer_x > 1450 && accelerometer_x < 1500);
+  {
+    Servo1.write(30);
+  }
+    else if (accelerometer_x > 1500 && accelerometer_x < 1550);
+  {
+    Servo1.write(31);
+  }
+  else if (accelerometer_x > 1550 && accelerometer_x < 1600);
+  {
+    Servo1.write(32);
+  }
+  else if (accelerometer_x > 1600 && accelerometer_x <1650);
+  {
+    Servo1.write(33);
+  }
+  else if (accelerometer_x > 1650 && accelerometer_x < 1700);
+  {
+    Servo1.write(34);
+  }
+  else if (accelerometer_x > 1700 && accelerometer_x < 1750);
+  {
+    Servo1.write(35);
+  }
+  else if (accelerometer_x > 1750 && accelerometer_x < 1800);
+  {
+    Servo1.write(36);
+  }
+  else if (accelerometer_x > 1800 && accelerometer_x < 1850);
+  {
+    Servo1.write(37);
+  }
+  else if (accelerometer_x > 1850 && accelerometer_x < 1900);
+  {
+    Servo1.write(38);
+  }
+  else if (aaccelerometer_xX > 1900 && accelerometer_x < 1950);
+  {
+    Servo1.write(39);
+  }
+  else if (aaccelerometer_x > 1950 && accelerometer_x < 2000);
+  {
+    Servo1.write(40);
+  }
+    if (accelerometer_x > 0 && accelerometer_x < 50);
+  {
+    Servo1.write(0);
+  }
+  else if (accelerometer_x > 50 && accelerometer_x < 100);
+  {
+    Servo1.write(1);
+  }
+  else if (accelerometer_x > 50 && accelerometer_x < 100);
+  {
+    Servo1.write(2);
+  }
+  else if (accelerometer_x > 100 && accelerometer_x <150);
+  {
+    Servo1.write(3);
+  }
+  else if (accelerometer_x > 150 && accelerometer_x < 200);
+  {
+    Servo1.write(4);
+  }
+  else if (accelerometer_x > 200 && accelerometer_x < 250);
+  {
+    Servo1.write(5);
+  }
+  else if (accelerometer_x > 250 && accelerometer_x < 300);
+  {
+    Servo1.write(6);
+  }
+  else if (accelerometer_x > 300 && accelerometer_x < 350);
+  {
+    Servo1.write(7);
+  }
+  else if (accelerometer_x > 350 && accelerometer_x < 400);
+  {
+    Servo1.write(8);
+  }
+  else if (aaccelerometer_xX > 400 && accelerometer_x < 450);
+  {
+    Servo1.write(9);
+  }
+  else if (aaccelerometer_x > 450 && accelerometer_x < 500);
+  {
+    Servo1.write(10);
+  }
+    else if (accelerometer_x > 500 && accelerometer_x < 550);
+  {
+    Servo1.write(11);
+  }
+  else if (accelerometer_x > 550 && accelerometer_x < 600);
+  {
+    Servo1.write(12);
+  }
+  else if (accelerometer_x > 600 && accelerometer_x <650);
+  {
+    Servo1.write(13);
+  }
+  else if (accelerometer_x > 650 && accelerometer_x < 700);
+  {
+    Servo1.write(14);
+  }
+  else if (accelerometer_x > 700 && accelerometer_x < 750);
+  {
+    Servo1.write(15);
+  }
+  else if (accelerometer_x > 750 && accelerometer_x < 800);
+  {
+    Servo1.write(16);
+  }
+  else if (accelerometer_x > 800 && accelerometer_x < 850);
+  {
+    Servo1.write(17);
+  }
+  else if (accelerometer_x > 850 && accelerometer_x < 900);
+  {
+    Servo1.write(18);
+  }
+  else if (aaccelerometer_xX > 900 && accelerometer_x < 950);
+  {
+    Servo1.write(19);
+  }
+  else if (aaccelerometer_x > 950 && accelerometer_x < 1000);
+  {
+    Servo1.write(20);
+  }
+    else if (accelerometer_x > 1000 && accelerometer_x < 1050);
+  {
+    Servo1.write(21);
+  }
+  else if (accelerometer_x > 1050 && accelerometer_x < 1100);
+  {
+    Servo1.write(22);
+  }
+  else if (accelerometer_x > 1100 && accelerometer_x <1150);
+  {
+    Servo1.write(23);
+  }
+  else if (accelerometer_x > 1150 && accelerometer_x < 1200);
+  {
+    Servo1.write(24);
+  }
+  else if (accelerometer_x > 1200 && accelerometer_x < 1250);
+  {
+    Servo1.write(25);
+  }
+  else if (accelerometer_x > 1250 && accelerometer_x < 1300);
+  {
+    Servo1.write(26);
+  }
+  else if (accelerometer_x > 1300 && accelerometer_x < 1350);
+  {
+    Servo1.write(27);
+  }
+  else if (accelerometer_x > 1350 && accelerometer_x < 1400);
+  {
+    Servo1.write(28);
+  }
+  else if (aaccelerometer_xX > 1400 && accelerometer_x < 1450);
+  {
+    Servo1.write(29);
+  }
+  else if (aaccelerometer_x > 1450 && accelerometer_x < 1500);
+  {
+    Servo1.write(30);
+  }
+    else if (accelerometer_x > 1500 && accelerometer_x < 1550);
+  {
+    Servo1.write(31);
+  }
+  else if (accelerometer_x > 1550 && accelerometer_x < 1600);
+  {
+    Servo1.write(32);
+  }
+  else if (accelerometer_x > 1600 && accelerometer_x <1650);
+  {
+    Servo1.write(33);
+  }
+  else if (accelerometer_x > 1650 && accelerometer_x < 1700);
+  {
+    Servo1.write(34);
+  }
+  else if (accelerometer_x > 1700 && accelerometer_x < 1750);
+  {
+    Servo1.write(35);
+  }
+  else if (accelerometer_x > 1750 && accelerometer_x < 1800);
+  {
+    Servo1.write(36);
+  }
+  else if (accelerometer_x > 1800 && accelerometer_x < 1850);
+  {
+    Servo1.write(37);
+  }
+  else if (accelerometer_x > 1850 && accelerometer_x < 1900);
+  {
+    Servo1.write(38);
+  }
+  else if (aaccelerometer_xX > 1900 && accelerometer_x < 1950);
+  {
+    Servo1.write(39);
+  }
+  else if (aaccelerometer_x > 1950 && accelerometer_x < 2000);
+  {
+    Servo1.write(40);
+  }
+  else if (accelerometer_x > 2050 && accelerometer_x < 2100);
+  {
+    Servo1.write(2);
+  }
+  else if (accelerometer_x > 2100 && accelerometer_x <2150);
+  {
+    Servo1.write(3);
+  }
+  else if (accelerometer_x > 2150 && accelerometer_x < 2200);
+  {
+    Servo1.write(4);
+  }
+  else if (accelerometer_x > 2200 && accelerometer_x < 2250);
+  {
+    Servo1.write(5);
+  }
+  else if (accelerometer_x > 2250 && accelerometer_x < 2300);
+  {
+    Servo1.write(6);
+  }
+  else if (accelerometer_x > 2300 && accelerometer_x < 2350);
+  {
+    Servo1.write(7);
+  }
+  else if (accelerometer_x > 2350 && accelerometer_x < 2400);
+  {
+    Servo1.write(8);
+  }
+  else if (aaccelerometer_xX > 2400 && accelerometer_x < 2450);
+  {
+    Servo1.write(9);
+  }
+  else if (aaccelerometer_x > 2450 && accelerometer_x < 2500);
+  {
+    Servo1.write(10);
+  }
+    else if (accelerometer_x > 2500 && accelerometer_x < 2550);
+  {
+    Servo1.write(11);
+  }
+  else if (accelerometer_x > 2550 && accelerometer_x < 2600);
+  {
+    Servo1.write(12);
+  }
+  else if (accelerometer_x > 2600 && accelerometer_x <2650);
+  {
+    Servo1.write(13);
+  }
+  else if (accelerometer_x > 2650 && accelerometer_x < 2700);
+  {
+    Servo1.write(14);
+  }
+  else if (accelerometer_x > 2700 && accelerometer_x < 2750);
+  {
+    Servo1.write(15);
+  }
+  else if (accelerometer_x > 2750 && accelerometer_x < 2800);
+  {
+    Servo1.write(16);
+  }
+  else if (accelerometer_x > 2800 && accelerometer_x < 2850);
+  {
+    Servo1.write(17);
+  }
+  else if (accelerometer_x > 2850 && accelerometer_x < 2900);
+  {
+    Servo1.write(18);
+  }
+  else if (aaccelerometer_xX > 2900 && accelerometer_x < 2950);
+  {
+    Servo1.write(19);
+  }
+  else if (aaccelerometer_x > 2950 && accelerometer_x < 3000);
+  {
+    Servo1.write(20);
+  }
+    else if (accelerometer_x > 3000 && accelerometer_x < 3050);
+  {
+    Servo1.write(21);
+  }
+  else if (accelerometer_x > 3050 && accelerometer_x < 3100);
+  {
+    Servo1.write(22);
+  }
+  else if (accelerometer_x > 3100 && accelerometer_x <3150);
+  {
+    Servo1.write(23);
+  }
+  else if (accelerometer_x > 3150 && accelerometer_x < 3200);
+  {
+    Servo1.write(24);
+  }
+  else if (accelerometer_x > 3200 && accelerometer_x < 3250);
+  {
+    Servo1.write(25);
+  }
+  else if (accelerometer_x > 3250 && accelerometer_x < 3300);
+  {
+    Servo1.write(26);
+  }
+  else if (accelerometer_x > 3300 && accelerometer_x < 3350);
+  {
+    Servo1.write(27);
+  }
+  else if (accelerometer_x > 3350 && accelerometer_x < 3400);
+  {
+    Servo1.write(28);
+  }
+  else if (aaccelerometer_xX > 3400 && accelerometer_x < 3450);
+  {
+    Servo1.write(29);
+  }
+  else if (aaccelerometer_x > 1450 && accelerometer_x < 1500);
+  {
+    Servo1.write(30);
+  }
+    else if (accelerometer_x > 1500 && accelerometer_x < 1550);
+  {
+    Servo1.write(31);
+  }
+  else if (accelerometer_x > 1550 && accelerometer_x < 1600);
+  {
+    Servo1.write(32);
+  }
+  else if (accelerometer_x > 1600 && accelerometer_x <1650);
+  {
+    Servo1.write(33);
+  }
+  else if (accelerometer_x > 1650 && accelerometer_x < 1700);
+  {
+    Servo1.write(34);
+  }
+  else if (accelerometer_x > 1700 && accelerometer_x < 1750);
+  {
+    Servo1.write(35);
+  }
+  else if (accelerometer_x > 1750 && accelerometer_x < 1800);
+  {
+    Servo1.write(36);
+  }
+  else if (accelerometer_x > 1800 && accelerometer_x < 1850);
+  {
+    Servo1.write(37);
+  }
+  else if (accelerometer_x > 1850 && accelerometer_x < 1900);
+  {
+    Servo1.write(38);
+  }
+  else if (aaccelerometer_xX > 1900 && accelerometer_x < 1950);
+  {
+    Servo1.write(39);
+  }
+  else if (aaccelerometer_x > 1950 && accelerometer_x < 2000);
+  {
+    Servo1.write(40);
+  }
   
-  // delay
   delay(100);
 }
